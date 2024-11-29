@@ -21,7 +21,7 @@ public class Participation{
 
     @ManyToOne
     @NotNull(message = "User cannot be null.")
-    private User user;
+    private AppUser user;
 
     @ManyToOne
     @NotNull(message = "Competition cannot be null.")

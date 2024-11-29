@@ -1,0 +1,45 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1732896172769-3
+      author: Youcode
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addColumn:
+            columns:
+              - column:
+                  name: is_active
+                  type: BOOLEAN
+              - column:
+                  name: last_login
+                  type: DATETIME
+            tableName: user
+  - changeSet:
+      id: 1732896172769-5
+      author: Youcode
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: username
+            constraintName: uc_user_username
+            tableName: user
+  - changeSet:
+      id: 1732896172769-1
+      author: Youcode
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addNotNullConstraint:
+            columnDataType: VARCHAR(255)
+            columnName: password
+            tableName: user
+            validate: true
+  - changeSet:
+      id: 1732896172769-2
+      author: Youcode
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addNotNullConstraint:
+            columnDataType: VARCHAR(255)
+            columnName: username
+            tableName: user
+            validate: true
+
