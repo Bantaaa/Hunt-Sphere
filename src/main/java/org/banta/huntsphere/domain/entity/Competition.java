@@ -20,7 +20,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Competition {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @NotBlank(message = "Code cannot be blank.")
