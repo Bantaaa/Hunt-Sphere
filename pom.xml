@@ -89,6 +89,12 @@
             <version>${jjwt.version}</version>
             <scope>runtime</scope>
         </dependency>
+        <!-- Security Starter -->
+        <dependency>
+            <groupId>org.banta</groupId>
+            <artifactId>xard-security</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>

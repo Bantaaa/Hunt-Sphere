@@ -10,7 +10,7 @@ import org.banta.huntsphere.web.error.exception.dto.ValidationErrorResponse;
 import org.banta.huntsphere.web.error.exception.resource.BadRequestException;
 import org.banta.huntsphere.web.error.exception.resource.ResourceAlreadyExistsException;
 import org.banta.huntsphere.web.error.exception.resource.ResourceNotFoundException;
-import org.banta.huntsphere.web.error.exception.security.JwtException;
+import org.banta.security.exception.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;

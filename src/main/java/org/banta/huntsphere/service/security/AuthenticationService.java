@@ -3,84 +3,53 @@ package org.banta.huntsphere.service.security;
 import lombok.RequiredArgsConstructor;
 import org.banta.huntsphere.domain.entity.AppUser;
 import org.banta.huntsphere.domain.enums.Role;
-import org.banta.huntsphere.dto.AuthRequest;
-import org.banta.huntsphere.dto.RegisterRequest;
-import org.banta.huntsphere.dto.AuthResponse;
 import org.banta.huntsphere.repository.UserRepository;
-import org.banta.huntsphere.web.error.exception.resource.BadRequestException;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.banta.security.dto.RegisterRequest;
+import org.banta.security.model.BaseUserDetails;
+import org.banta.security.service.UserRegistrationService;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class AuthenticationService {
+public class AuthenticationService implements UserRegistrationService, UserDetailsService {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
-    private final PasswordValidator passwordValidator;
 
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
 
-    public AuthResponse register(RegisterRequest request) {
-        if (passwordValidator.isInvalid(request.getPassword())) {
-            throw new BadRequestException(passwordValidator.getPasswordRequirements());
-        }
-
-        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-            throw new BadRequestException("Username already exists");
-        }
-
+    @Override
+    public BaseUserDetails createUser(RegisterRequest request) {
         AppUser appUser = new AppUser();
         appUser.setUsername(request.getUsername());
-        appUser.setPassword(passwordEncoder.encode(request.getPassword()));
+        appUser.setPassword(request.getPassword()); // Already encoded by RegistrationService
         appUser.setRole(Role.MEMBER);
-        appUser.setFirstName(request.getFirstName());
-        appUser.setLastName(request.getLastName());
-        appUser.setCin(request.getCin());
         appUser.setEmail(request.getEmail());
-        appUser.setNationality(request.getNationality());
-        appUser.setJoinDate(LocalDateTime.now());
-        appUser.setLicenseExpirationDate(request.getLicenseExpirationDate());
+        appUser.setFirstName((String) request.getAdditionalFields().get("firstName"));
+        appUser.setLastName((String) request.getAdditionalFields().get("lastName"));
+        appUser.setCin((String) request.getAdditionalFields().get("cin"));
+        appUser.setNationality((String) request.getAdditionalFields().get("nationality"));
+        appUser.setLicenseExpirationDate((LocalDateTime) request.getAdditionalFields().get("licenseExpirationDate"));
         appUser.setIsActive(true);
+        appUser.setJoinDate(LocalDateTime.now());
         appUser.setLastLogin(null);
 
-        AppUser savedAppUser = userRepository.save(appUser);
-        String token = jwtService.generateToken(savedAppUser);
-
-        return AuthResponse.builder()
-                .token(token)
-                .username(savedAppUser.getUsername())
-                .role(savedAppUser.getRole())
-                .build();
+        return userRepository.save(appUser);
     }
 
-    public AuthResponse authenticate(AuthRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
-                        request.getPassword()
-                )
-        );
-
-        AppUser appUser = userRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new BadRequestException("Invalid credentials"));
-
-        String token = jwtService.generateToken(appUser);
-
-        return AuthResponse.builder()
-                .token(token)
-                .username(appUser.getUsername())
-                .role(appUser.getRole())
-                .build();
+    @Override
+    public boolean userExists(String username) {
+        return userRepository.findByUsername(username).isPresent();
     }
-    // password validation during user creation/password change
-    public void validatePassword(String password) {
-        if (passwordValidator.isInvalid(password)) {
-            throw new BadRequestException(passwordValidator.getPasswordRequirements());
-        }
+
+    @Override
+    public boolean emailExists(String email) {
+        return userRepository.findByEmail(email).isPresent();
     }
 }

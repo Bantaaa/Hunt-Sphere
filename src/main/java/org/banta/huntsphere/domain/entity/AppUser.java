@@ -1,5 +1,6 @@
 package org.banta.huntsphere.domain.entity;
 
+import org.banta.security.model.BaseUserDetails;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
@@ -7,7 +8,6 @@ import lombok.Setter;
 import org.banta.huntsphere.domain.enums.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -18,7 +18,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Table(name = "\"user\"")
-public class AppUser implements UserDetails {
+public class AppUser implements BaseUserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
