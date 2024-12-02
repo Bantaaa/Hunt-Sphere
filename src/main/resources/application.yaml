@@ -27,11 +27,7 @@ security:
     - PUT
     - DELETE
   public-paths:
-    - /api/public/**
+    - /api/test/public/**
     - /auth/**
     - /v3/api-docs/**
     - /swagger-ui/**
-  role-hierarchy:
-    - ADMIN
-    - JURY
-    - MEMBER

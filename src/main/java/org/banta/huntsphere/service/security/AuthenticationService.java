@@ -43,6 +43,71 @@ public class AuthenticationService implements UserRegistrationService, UserDetai
         return userRepository.save(appUser);
     }
 
+//    @Override
+//    public BaseUserDetails createUser(RegisterRequest request) {
+//        try {
+//            System.out.println("Starting user creation...");
+//            System.out.println("Username: " + request.getUsername());
+//            System.out.println("Email: " + request.getEmail());
+//            System.out.println("Additional fields: " + request.getAdditionalFields());
+//
+//            AppUser appUser = new AppUser();
+//            appUser.setUsername(request.getUsername());
+//            appUser.setPassword(request.getPassword());
+//            appUser.setRole(Role.MEMBER);
+//            appUser.setEmail(request.getEmail());
+//
+//            try {
+//                appUser.setFirstName((String) request.getAdditionalFields().get("firstName"));
+//                System.out.println("First name set: " + appUser.getFirstName());
+//            } catch (Exception e) {
+//                System.out.println("Error setting firstName: " + e.getMessage());
+//            }
+//
+//            try {
+//                appUser.setLastName((String) request.getAdditionalFields().get("lastName"));
+//                System.out.println("Last name set: " + appUser.getLastName());
+//            } catch (Exception e) {
+//                System.out.println("Error setting lastName: " + e.getMessage());
+//            }
+//
+//            try {
+//                appUser.setCin((String) request.getAdditionalFields().get("cin"));
+//                System.out.println("CIN set: " + appUser.getCin());
+//            } catch (Exception e) {
+//                System.out.println("Error setting cin: " + e.getMessage());
+//            }
+//
+//            try {
+//                appUser.setNationality((String) request.getAdditionalFields().get("nationality"));
+//                System.out.println("Nationality set: " + appUser.getNationality());
+//            } catch (Exception e) {
+//                System.out.println("Error setting nationality: " + e.getMessage());
+//            }
+//
+//            try {
+//                String dateStr = (String) request.getAdditionalFields().get("licenseExpirationDate");
+//                LocalDateTime date = LocalDateTime.parse(dateStr);
+//                appUser.setLicenseExpirationDate(date);
+//                System.out.println("License date set: " + appUser.getLicenseExpirationDate());
+//            } catch (Exception e) {
+//                System.out.println("Error setting licenseExpirationDate: " + e.getMessage());
+//            }
+//
+//            appUser.setIsActive(true);
+//            appUser.setJoinDate(LocalDateTime.now());
+//            appUser.setLastLogin(null);
+//
+//            System.out.println("Attempting to save user...");
+//            return userRepository.save(appUser);
+//
+//        } catch (Exception e) {
+//            System.out.println("Error in createUser: " + e.getMessage());
+//            e.printStackTrace();
+//            throw e;
+//        }
+//    }
+
     @Override
     public boolean userExists(String username) {
         return userRepository.findByUsername(username).isPresent();
