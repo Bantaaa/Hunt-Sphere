@@ -10,8 +10,9 @@ import org.banta.huntsphere.web.error.exception.dto.ValidationErrorResponse;
 import org.banta.huntsphere.web.error.exception.resource.BadRequestException;
 import org.banta.huntsphere.web.error.exception.resource.ResourceAlreadyExistsException;
 import org.banta.huntsphere.web.error.exception.resource.ResourceNotFoundException;
-import org.banta.security.exception.JwtException;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException;import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -25,10 +26,8 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-
     @ExceptionHandler(BadRequestException.class)
     protected ResponseEntity<ErrorResponse> handleBadRequest(BadRequestException ex) {
-
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 ex.getMessage(),
@@ -37,8 +36,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(JwtException.class)
-    public ResponseEntity<ErrorResponse> handleJwtException(JwtException ex) {
+    // Replace JwtException with Spring Security exceptions
+    @ExceptionHandler({
+            AccessDeniedException.class,
+            AuthenticationException.class,
+            InvalidBearerTokenException.class
+    })
+    public ResponseEntity<ErrorResponse> handleSecurityException(Exception ex) {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.UNAUTHORIZED.value(),
                 ex.getMessage(),
@@ -46,8 +50,6 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
-
-
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException ex) {

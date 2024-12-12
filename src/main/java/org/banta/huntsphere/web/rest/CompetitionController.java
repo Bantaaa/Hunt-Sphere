@@ -15,7 +15,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RequestMapping("/api/competitions")
 public class CompetitionController {
-    private CompetitionService competitionService;
+    private final CompetitionService competitionService;
 
     @PostMapping
     public ResponseEntity<CompetitionDTO> createCompetition(@Valid @RequestBody CompetitionDTO competitionDTO) {
@@ -29,6 +29,12 @@ public class CompetitionController {
 
     @GetMapping("/active")
     public ResponseEntity<List<CompetitionDTO>> getActiveCompetitions() {
-        return ResponseEntity.ok(competitionService.getActiveCompetitions());
+        try {
+            List<CompetitionDTO> competitions = competitionService.getActiveCompetitions();
+            return ResponseEntity.ok(competitions);
+        } catch (Exception e) {
+            e.printStackTrace(); // add this to see the actual error
+            throw e;
+        }
     }
 }

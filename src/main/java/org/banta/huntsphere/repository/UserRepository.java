@@ -1,5 +1,6 @@
 package org.banta.huntsphere.repository;
 
+import jakarta.validation.constraints.NotBlank;
 import org.banta.huntsphere.domain.entity.AppUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -13,4 +14,6 @@ public interface UserRepository extends JpaRepository<AppUser, UUID> {
     boolean existsByCin(String cin);
     Optional<AppUser> findByUsername(String username);
     Optional<AppUser> findByEmail(String email);
+
+    boolean existsByUsername(@NotBlank(message = "Username cannot be blank.") String username);
 }

@@ -1,33 +1,44 @@
+# application.yaml
 server:
-  port: 8081  # Needed to specify which port your app runs on
+  port: 8081
 
 spring:
-  datasource:  # Required database connection details
+  datasource:
     url: jdbc:postgresql://localhost:5432/HuntSphere
     username: HuntSphere
     password: HuntSphere
     driver-class-name: org.postgresql.Driver
 
-  jpa:  # Basic JPA settings needed for database operations
+  jpa:
     hibernate:
-      ddl-auto: none  # We use 'none' because we're using Liquibase
-    show-sql: true    # Helpful for development to see SQL queries
+      ddl-auto: none
+    show-sql: true
 
-  liquibase:  # Required for Liquibase to work
+  liquibase:
     change-log: db/changelog/master.yaml
 
-security:
-  jwt-secret: a0325cd484dab61ebb49f06bb33a09177d60724bcf8d6b8f8468f632fd6f8c7497be827426bd5be964d647597bd8eebd0618bff254fbc3d986d38deecf58607cb325420df3f5c7e25441eb6fcefafa9b49a675626ba3112f8a88c6751a79937563c22df282594d16a80af6f2fc8c3e28223de97dbeb6b994450202c76e0334a56b97b5faa8f3d38615e87edabae3a8e1a67995d707043dd6298faf930c961a7c6c1adc6cdb85cbb017ef40f0a9a3966d52df13649841129980c01e6e3e12c7a1914c34d26907c052679f2e25889f6483778bbe43a3d958d73a666e2bc8722d6942884f66f58ca211da259bdde2d9b9404918d45f0bdd4196d4b800e05a062839
-  jwt-expiration: 86400000
-  allowed-origins:
-    - http://localhost:4200
-  allowed-methods:
-    - GET
-    - POST
-    - PUT
-    - DELETE
-  public-paths:
-    - /api/test/public/**
-    - /auth/**
-    - /v3/api-docs/**
-    - /swagger-ui/**
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/huntsphere
+          jwk-set-uri: http://localhost:8080/realms/huntsphere/protocol/openid-connect/certs
+
+keycloak:
+  realm: huntsphere
+  auth-server-url: http://localhost:8080
+  resource: huntsphere-backend
+  credentials:
+    secret: hD3aNfUcqjMKwJduCBh2e4uzKd6YXrKJ
+  bearer-only: true
+  public-client: false
+  # Add these new lines
+  admin:
+    client-id: admin-cli
+    client-secret: 02RO89kZh884yeb8BTpzZsklJrjvHVhl  # Replace with your actual admin client secret
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.keycloak: DEBUG
+    org.banta.huntsphere: DEBUG
