@@ -70,6 +70,7 @@ pipeline {
         success {
             echo 'Build succeeded!'
             emailext (
+                to: 'banta4code@gmail.com',
                 subject: "SUCCESS: ${currentBuild.fullDisplayName}",
                 body: """
                 Pipeline completed successfully!
@@ -79,7 +80,14 @@ pipeline {
                 Build URL: ${BUILD_URL}
                 """,
                 recipientProviders: [[$class: 'DevelopersRecipientProvider']],
-                to: 'banta4code@gmail.com'
+                mimeType: 'text/html',
+                attachLog: false,
+                compressLog: false,
+                configuration: [
+                    SMTP_HOST: 'smtp.gmail.com',
+                    SMTP_PORT: '465',
+                    SSL: true
+                ]
             )
         }
         failure {
