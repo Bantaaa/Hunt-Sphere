@@ -69,9 +69,27 @@ pipeline {
         }
         success {
             echo 'Build succeeded!'
+            mail to: 'banta4code@gmail.com',
+                 subject: "Success: Hunt-Sphere Pipeline ${currentBuild.fullDisplayName}",
+                 body: """
+                 Pipeline completed successfully!
+
+                 Project: Hunt-Sphere
+                 Build Number: ${BUILD_NUMBER}
+                 Build URL: ${BUILD_URL}
+                 """
         }
         failure {
             echo 'Build failed!'
+            mail to: 'banta4code@gmail.com',
+                 subject: "Failed: Hunt-Sphere Pipeline ${currentBuild.fullDisplayName}",
+                 body: """
+                 Pipeline failed!
+
+                 Project: Hunt-Sphere
+                 Build Number: ${BUILD_NUMBER}
+                 Build URL: ${BUILD_URL}
+                 """
         }
     }
 }
