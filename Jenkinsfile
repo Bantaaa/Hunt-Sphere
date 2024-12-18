@@ -5,7 +5,9 @@ pipeline {
         DOCKER_IMAGE = 'huntsphere'
         DOCKER_TAG = 'latest'
         SONAR_PROJECT_KEY = 'huntsphere'
-        APP_PORT = '8081'  // Changed from 8080 to 8081
+        APP_PORT = '8081'
+        // Add email recipients
+        EMAIL_RECIPIENTS = 'banta4code@gmail.com'
     }
 
     stages {
@@ -70,31 +72,38 @@ pipeline {
         success {
             echo 'Build succeeded!'
             emailext (
-                subject: "SUCCESS: ${currentBuild.fullDisplayName}",
+                subject: "Pipeline Success: ${currentBuild.fullDisplayName}",
                 body: """
-                Pipeline completed successfully!
+                    Pipeline execution completed successfully!
 
-                Project: Hunt-Sphere
-                Build Number: ${BUILD_NUMBER}
-                Build URL: ${BUILD_URL}
+                    Build Number: ${currentBuild.number}
+                    Build URL: ${env.BUILD_URL}
+                    Project: ${env.JOB_NAME}
+
+                    Changes:
+                    ${currentBuild.changeSets.size() > 0 ? currentBuild.changeSets.collect { it.toString() }.join('\n') : 'No changes'}
                 """,
                 recipientProviders: [[$class: 'DevelopersRecipientProvider']],
-                to: 'banta4code@gmail.com'
+                to: "${EMAIL_RECIPIENTS}"
             )
         }
         failure {
             echo 'Build failed!'
             emailext (
-                subject: "FAILED: ${currentBuild.fullDisplayName}",
+                subject: "Pipeline Failed: ${currentBuild.fullDisplayName}",
                 body: """
-                Pipeline failed!
+                    Pipeline execution failed!
 
-                Project: Hunt-Sphere
-                Build Number: ${BUILD_NUMBER}
-                Build URL: ${BUILD_URL}
+                    Build Number: ${currentBuild.number}
+                    Build URL: ${env.BUILD_URL}
+                    Project: ${env.JOB_NAME}
+
+                    Console Output:
+                    ${currentBuild.rawBuild.getLog(100).join('\n')}
                 """,
                 recipientProviders: [[$class: 'DevelopersRecipientProvider']],
-                to: 'banta4code@gmail.com'
+                to: "${EMAIL_RECIPIENTS}"
             )
         }
     }
+}
