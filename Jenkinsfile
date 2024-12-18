@@ -69,27 +69,32 @@ pipeline {
         }
         success {
             echo 'Build succeeded!'
-            mail to: 'banta4code@gmail.com',
-                 subject: "Success: Hunt-Sphere Pipeline ${currentBuild.fullDisplayName}",
-                 body: """
-                 Pipeline completed successfully!
+            emailext (
+                subject: "SUCCESS: ${currentBuild.fullDisplayName}",
+                body: """
+                Pipeline completed successfully!
 
-                 Project: Hunt-Sphere
-                 Build Number: ${BUILD_NUMBER}
-                 Build URL: ${BUILD_URL}
-                 """
+                Project: Hunt-Sphere
+                Build Number: ${BUILD_NUMBER}
+                Build URL: ${BUILD_URL}
+                """,
+                recipientProviders: [[$class: 'DevelopersRecipientProvider']],
+                to: 'banta4code@gmail.com'
+            )
         }
         failure {
             echo 'Build failed!'
-            mail to: 'banta4code@gmail.com',
-                 subject: "Failed: Hunt-Sphere Pipeline ${currentBuild.fullDisplayName}",
-                 body: """
-                 Pipeline failed!
+            emailext (
+                subject: "FAILED: ${currentBuild.fullDisplayName}",
+                body: """
+                Pipeline failed!
 
-                 Project: Hunt-Sphere
-                 Build Number: ${BUILD_NUMBER}
-                 Build URL: ${BUILD_URL}
-                 """
+                Project: Hunt-Sphere
+                Build Number: ${BUILD_NUMBER}
+                Build URL: ${BUILD_URL}
+                """,
+                recipientProviders: [[$class: 'DevelopersRecipientProvider']],
+                to: 'banta4code@gmail.com'
+            )
         }
     }
-}
