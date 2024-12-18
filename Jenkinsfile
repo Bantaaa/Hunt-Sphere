@@ -5,6 +5,7 @@ pipeline {
         DOCKER_IMAGE = 'huntsphere'
         DOCKER_TAG = 'latest'
         SONAR_PROJECT_KEY = 'huntsphere'
+        APP_PORT = '8081'  // Changed from 8080 to 8081
     }
 
     stages {
@@ -56,7 +57,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    bat "docker run -d -p 8080:8080 ${DOCKER_IMAGE}:${DOCKER_TAG}"
+                    bat "docker run -d -p ${APP_PORT}:8080 ${DOCKER_IMAGE}:${DOCKER_TAG}"
                 }
             }
         }
