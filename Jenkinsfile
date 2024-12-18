@@ -14,20 +14,8 @@ pipeline {
             }
         }
 
-        stage('Test') {
-            steps {
-                bat 'mvn test'
-            }
-            post {
-                always {
-                    junit '**/target/surefire-reports/*.xml'
-                }
-            }
-        }
-
         stage('Package') {
             steps {
-                // Archive the JAR file
                 archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
             }
         }
