@@ -1,21 +1,36 @@
 server:
-  port: 8081  # Needed to specify which port your app runs on
+  port: 8081
 
 spring:
-  datasource:  # Required database connection details
-    url: jdbc:postgresql://localhost:5432/HuntSphere
+  mvc:
+    throw-exception-if-no-handler-found: true
+    jackson:
+      serialization:
+        WRITE_DATES_AS_TIMESTAMPS: false
+      deserialization:
+        FAIL_ON_UNKNOWN_PROPERTIES: false
+    jpa:
+      properties:
+        hibernate:
+          format_sql: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
     username: HuntSphere
     password: HuntSphere
     driver-class-name: org.postgresql.Driver
 
-  jpa:  # Basic JPA settings needed for database operations
-    hibernate:
-      ddl-auto: none  # We use 'none' because we're using Liquibase
-    show-sql: true    # Helpful for development to see SQL queries
-
-  liquibase:  # Required for Liquibase to work
+  liquibase:
     change-log: db/changelog/master.yaml
 
 jwt:
   secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
   expiration: 86400000
+
+logging:
+  level:
+    root: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.banta: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
